@@ -47,7 +47,7 @@ Component({
   methods: {
     _scroll: function(e) {
       // console.log(e);
-      if (e.detail.scrollTop <= 0) {
+      if (e.detail.scrollTop <= 50) {
         // 滚动到顶部
         this.setData({
           scrollTop: true
