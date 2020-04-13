@@ -1,0 +1,129 @@
+/**
+ * 下拉刷新的控制
+ */
+var startmark = 0; // 开始触摸屏幕的位置
+var newmark = 0; // 当前移动到的位置
+var maxDistance = 80; // 下拉最大距离（单位px）
+var triggered = false; // 当前下拉刷新状态，true表示下拉刷新已经被触发，false表示下拉刷新未被触发
+
+/**
+ * 手指触摸动作开始
+ */
+var touchStart = function(e, instance) {
+  var scrollTop = e.instance.getDataset().scrolltop;
+  // 当前处于顶部并且没有处于刷新状态
+  if (scrollTop && !triggered) {
+    startmark = e.touches[0].pageY;
+  } else {
+    return;
+  }
+}
+
+/**
+ * 手指触摸后移动
+ */
+var touchMove = function(e, instance) {
+  var scrollTop = e.instance.getDataset().scrolltop;
+  var circleProgressBarHeight = e.instance.getDataset().progressbarheight;
+  // 当前处于顶部并且没有处于刷新状态
+  if (scrollTop && !triggered) {
+    newmark = e.touches[0].pageY;
+    if (newmark < startmark) {
+      // 向上滑动
+      instance.selectComponent('.circle-progress-bar').setStyle({
+        'transform': 'none'
+      });
+      instance.selectComponent('.icon-shuaxin').setStyle({
+        'transform': 'none',
+        'opacity': 0
+      });
+    } else if (newmark - startmark > maxDistance + circleProgressBarHeight) {
+      // 达到最大滑动距离
+      instance.selectComponent('.circle-progress-bar').setStyle({
+        'transform': 'translateY(' + (maxDistance + circleProgressBarHeight) + 'px)'
+      });
+      instance.selectComponent('.icon-shuaxin').setStyle({
+        'transform': 'rotate(270deg)',
+        'opacity': 1
+      });
+    } else {
+      // 向下滑动，未到达最大滑动距离
+      instance.selectComponent('.circle-progress-bar').setStyle({
+        'transform': 'translateY(' + (newmark - startmark) + 'px)'
+      });
+      // 计算加载进度条的透明度，当滑动距离为最大滑动距离的一半时opacity为1
+      var opacity = 0;
+      if (newmark - startmark <= (maxDistance + circleProgressBarHeight) / 2) {
+        opacity = 1 * (newmark - startmark) / (maxDistance + circleProgressBarHeight);
+      } else {
+        opacity = 1;
+      }
+      instance.selectComponent('.icon-shuaxin').setStyle({
+        'transform': 'rotate(' + 270 * (newmark - startmark) / (maxDistance + circleProgressBarHeight) + 'deg)',
+        'opacity': opacity
+      });
+    }
+  } else {
+    return;
+  }
+}
+
+/**
+ * 手指触摸动作结束
+ */
+var touchEnd = function(e, instance) {
+  var scrollTop = e.instance.getDataset().scrolltop;
+  var threshold = e.instance.getDataset().threshold;
+  // 当前处于顶部并且没有处于刷新状态
+  if (scrollTop && !triggered) {
+    if (newmark - startmark < (threshold + 40)) {
+      // 滑动距离未达到阈值（这里的40为加载圈高度），回到原位
+      startmark = 0;
+      newmark = 0;
+      instance.selectComponent('.circle-progress-bar').setStyle({
+        'transform': 'none',
+        'opacity': 0,
+        'transition-duration': '0.6s'
+      });
+    } else {
+      // 滑动距离达到阈值，触发刷新
+      startmark = 0;
+      newmark = 0;
+      instance.selectComponent('.circle-progress-bar').setStyle({
+        'transform': 'none',
+        'opacity': 0
+      });
+      instance.callMethod('setRefresh', true);
+    }
+  } else {
+    return;
+  }
+}
+
+/**
+ * 手指触摸动作被打断，如来电提醒，弹窗
+ */
+var touchCancel = function(e, instance) {
+  // 回到原位
+  startmark = 0;
+  newmark = 0;
+  instance.selectComponent('.circle-progress-bar').setStyle({
+    'transform': 'none',
+    'opacity': 0
+  });
+}
+
+/**
+ * 刷新状态变化监听
+ */
+var refreshStateChange = function(newValue, oldValue, ownerInstance, ins) {
+  triggered = newValue;
+}
+
+module.exports = {
+  touchStart: touchStart,
+  touchMove: touchMove,
+  touchEnd: touchEnd,
+  touchCancel: touchCancel,
+  refreshStateChange: refreshStateChange
+}

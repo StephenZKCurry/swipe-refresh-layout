@@ -1,0 +1,19 @@
+<!--components/swiperefreshlayout/swiperefreshlayout.wxml-->
+<scroll-view class='scroll-container' scroll-y bindscroll='_scroll' bindscrolltolower='_scrollToLower' bindtouchstart='{{scroll.touchStart}}' catchtouchmove='{{scroll.touchMove}}' bindtouchend='{{scroll.touchEnd}}' bindtouchcancel='{{scroll.touchCancel}}'
+  data-scrolltop='{{scrollTop}}' data-threshold='{{threshold}}' data-progressbarheight='{{progressBarHeight}}' change:prop='{{scroll.refreshStateChange}}' prop='{{triggered}}'>
+  <view class='view-container'>
+    <!-- 下拉刷新圆圈 -->
+    <view class='circle-progress-bar' style='background-color:{{backgroundColor}};'>
+      <text class='iconfont icon-shuaxin' style='font-size:50rpx;color:{{color}};' />
+    </view>
+    <!-- 刷新中圆圈 -->
+    <view class='circle-progress-bar' style='background-color:{{backgroundColor}};margin-top:40rpx;' hidden='{{!triggered}}'>
+      <view class='loading' style='border-top:5rpx solid {{color}};border-left:5rpx solid {{color}};border-right:5rpx solid {{color}};' />
+    </view>
+    <!-- 刷新内容 -->
+    <view class='view-refresh-content'>
+      <slot></slot>
+    </view>
+  </view>
+</scroll-view>
+<wxs src='./scroll.wxs' module='scroll'></wxs>

@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "swipe-refresh-layout": "/components/swiperefreshlayout/swiperefreshlayout"
+  }
+}

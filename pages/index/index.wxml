@@ -1,0 +1,25 @@
+<!--pages/index/index.wxml-->
+<view class='index-container'>
+  <!-- <view class='view-top-bar' /> -->
+  <swipe-refresh-layout id='refresh' style='width:100vw;height:0;flex:1;' loadMoreEnable bindrefresh='refresh' bindloadmore='loadMore'>
+    <view wx:if='{{!isEmpty}}'>
+      <block wx:for='{{list}}' wx:key='{{index}}'>
+        <view style='height:160rpx;display:flex;justify-content:center;align-items:center;background-color:white;border-bottom:2rpx solid #d9d9d9;'>第{{item}}个</view>
+      </block>
+      <!-- 上拉加载布局 -->
+      <view hidden='{{list.length==0}}'>
+        <view wx:if='{{hasMore}}' class='weui-loadmore'>
+          <view class='weui-loading'></view>
+          <text class='weui-loadmore_tips'>正在加载</text>
+        </view>
+        <view wx:else class='weui-loadmore'>
+          <text class='weui-loadmore_tips'>没有更多内容了</text>
+        </view>
+      </view>
+    </view>
+    <!-- 空数据显示 -->
+    <view wx:else style='height:100%;display:flex;justify-content:center;align-items:center;font-size:36rpx;'>
+      <text>暂无数据</text>
+    </view>
+  </swipe-refresh-layout>
+</view>
