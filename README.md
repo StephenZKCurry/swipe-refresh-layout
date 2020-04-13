@@ -13,6 +13,7 @@
 | loadMoreEnable  | boolean     | false | 是否开启上拉加载                   |
 | bindrefresh     | eventhandle |       | 下拉刷新回调函数                   |
 | bindloadmore    | eventhandle |       | 上拉加载回调函数                   |
+
 此外，组件还定义了一个`setRefresh()`函数，用于设置刷新状态，参数传入一个布尔值，true表示开始刷新，显示下拉刷新圆圈；false表示结束刷新，隐藏下拉刷新圆圈。
 示例代码如下：
 **index.wxml**
